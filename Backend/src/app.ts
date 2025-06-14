@@ -6,7 +6,6 @@ import { Request, Response } from 'express';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
 
-
 const app = express();
 const PORT = 3000;
 
@@ -37,16 +36,11 @@ app.get('/', (_req, res) => {
   res.send('Errgo Backend Interview Module Loaded Successfully!');
 });
 
-/**
- * TODO: Complete the method for creating a new project
- * The response should contain an object of type IProject
- * 
- * Hint: Utilize the projects to store the newly generated of project 
- * Hint: Utilize the uuid npm package to generate the unique ids for the project 
- */
+// Create a new project
 app.post('/projects', (req: Request, res: Response): void => {
   const { project } = req.body;
   console.log('Project data received:', project);
+  
   const parseResult = projectSchema.safeParse(project);
 
   if (!parseResult.success) {
@@ -61,21 +55,13 @@ app.post('/projects', (req: Request, res: Response): void => {
     description: project.description
   };
 
-
   projects.push(newProject);
-
 
   res.status(200).json(newProject);
 });
 
-/**
- * TODO: Complete the method for returning the current list of projects 
- * The response should contain a list of IProject
- * 
- * Hint: Utilize the projects to retrieve the list of projects 
- */
+// Get all projects
 app.get('/projects', (_req, res) => {
-
   res.status(200).json(projects);
 });
 
@@ -132,7 +118,6 @@ wss.on('connection', (ws) => {
     console.error('WebSocket error:', error);
   });
 });
-
 
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running at http://localhost:${PORT}`);

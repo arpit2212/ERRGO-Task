@@ -14,6 +14,20 @@ export const ChatPage: React.FC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const wsRef = useRef<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const reconnectTimeoutRef = useRef<number | null>(null);
+
+  // Function to get the appropriate WebSocket URL
+  const getWebSocketUrl = (): string => {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const hostname = window.location.hostname;
+    
+    // For development, use localhost
+    const wsHostname = process.env.NODE_ENV === 'development' || hostname === 'localhost'
+      ? 'localhost'
+      : hostname;
+      
+    return `${protocol}//${wsHostname}:3000/`;
+  };
 
   // Scroll to bottom when new messages arrive
   const scrollToBottom = () => {
@@ -24,15 +38,22 @@ export const ChatPage: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  // WebSocket connection setup
-  useEffect(() => {
-    // Use the correct WebSocket URL - make sure port matches your backend
-    const ws = new WebSocket('ws://192.168.29.45:3000');
+  // WebSocket connection setup with reconnection logic
+  const connectWebSocket = () => {
+    const wsUrl = getWebSocketUrl();
+    console.log('Attempting WebSocket connection to:', wsUrl);
+    
+    const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 
     ws.onopen = () => {
       console.log('Connected to WebSocket server');
       setIsConnected(true);
+      // Clear any pending reconnection attempts
+      if (reconnectTimeoutRef.current) {
+        window.clearTimeout(reconnectTimeoutRef.current);
+        reconnectTimeoutRef.current = null;
+      }
     };
 
     ws.onmessage = (event) => {
@@ -52,20 +73,36 @@ export const ChatPage: React.FC = () => {
       }
     };
 
-    ws.onclose = () => {
-      console.log('Disconnected from WebSocket server');
+    ws.onclose = (event) => {
+      console.log('Disconnected from WebSocket server', event.code, event.reason);
       setIsConnected(false);
+      
+      // Attempt to reconnect after 3 seconds if not manually closed
+      if (event.code !== 1000) {
+        console.log('Attempting to reconnect in 3 seconds...');
+        reconnectTimeoutRef.current = window.setTimeout(() => {
+          connectWebSocket();
+        }, 3000);
+      }
     };
 
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
       setIsConnected(false);
     };
+  };
+
+  // Initial connection setup
+  useEffect(() => {
+    connectWebSocket();
 
     // Cleanup on component unmount
     return () => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.close();
+      if (reconnectTimeoutRef.current) {
+        window.clearTimeout(reconnectTimeoutRef.current);
+      }
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.close(1000, 'Component unmounting');
       }
     };
   }, []);
@@ -95,6 +132,14 @@ export const ChatPage: React.FC = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  // Manual reconnect function
+  const handleReconnect = () => {
+    if (wsRef.current) {
+      wsRef.current.close();
+    }
+    connectWebSocket();
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header */}
@@ -106,6 +151,14 @@ export const ChatPage: React.FC = () => {
             <span className="text-sm text-gray-600">
               {isConnected ? 'Connected' : 'Disconnected'}
             </span>
+            {!isConnected && (
+              <button
+                onClick={handleReconnect}
+                className="text-xs px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                Reconnect
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -138,7 +191,7 @@ export const ChatPage: React.FC = () => {
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Type your message..."
+            placeholder={isConnected ? "Type your message..." : "Connecting..."}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             disabled={!isConnected}
           />
@@ -152,6 +205,6 @@ export const ChatPage: React.FC = () => {
           </button>
         </form>
       </div>
-  </div>
-);
+    </div>
+  );
 };

@@ -1,7 +1,9 @@
+// ProjectPage.js
 import React, { useState, type FormEvent } from 'react';
 import { Eye, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createProject } from '../controller/ProjectController';
+
 export const ProjectPage: React.FC = () => {
   const [projectName, setProjectName] = useState<string>("");
   const [projectDescription, setProjectDescription] = useState<string>("");
@@ -35,7 +37,6 @@ export const ProjectPage: React.FC = () => {
         alert("An error occurred while creating the project.");
       });
   }
-
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">

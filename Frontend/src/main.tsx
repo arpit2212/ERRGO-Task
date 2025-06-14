@@ -16,6 +16,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <ProjectPage /> },
+      { path: 'project', element: <ProjectPage /> },
       { path: 'project-details', element: <ProjectDetailsPage/> }
     ],
   },
@@ -23,7 +24,6 @@ const router = createBrowserRouter([
     path: '/chat',
     element: <ChatPage />  
   },
-
 ]);
 
 createRoot(document.getElementById('root')!).render(
