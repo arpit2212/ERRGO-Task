@@ -12,27 +12,14 @@ A comprehensive real-time project tracking platform that revolutionizes how team
 
 ## UI SCREENSHOTS 
 
-![Login](screenshots/login.png)
-*Secure user authentication interface*
+![Chat Page](https://github.com/arpit2212/ERRGO-Task/blob/main/Frontend/public/ChatPage.png)
+*Chat Page where anyone can post message*
 
-![Dashboard](screenshots/dashboard.png)
-*Comprehensive project dashboard with real-time metrics*
+![Project Page](https://github.com/arpit2212/ERRGO-Task/blob/main/Frontend/public/ProjectPage.png)
+*Main Project Page where we can create project*
 
-![Project Management](screenshots/project-management.png)
-*Intuitive project creation and management interface*
-
-![Task Board](screenshots/task-board.png)
-*Kanban-style task board with drag-and-drop functionality*
-
-![Team Collaboration](screenshots/team-collaboration.png)
-*Real-time team communication and file sharing*
-
-![Gantt Chart](screenshots/gantt-chart.png)
-*Interactive Gantt chart for timeline visualization*
-
-![Analytics Dashboard](screenshots/analytics-reports.png)
-*Advanced analytics and reporting dashboard*
-
+![Project Detail Page](https://github.com/arpit2212/ERRGO-Task/blob/main/Frontend/public/ProjectDetailPage.png)
+*Page where all the projects are displayed*
 
 ## 🌟 Features
 
