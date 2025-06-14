@@ -213,6 +213,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Contact Information:**
 - **Developer**: Arpit Shrivastava
 - **Email**: as5260@srmist.edu.in
+- **Resume link** : [Resume](https://drive.google.com/file/d/10f-ftZ2yNqXvbMMvjzcfsGF5-WtsicvV/view?usp=sharing)
 - **LinkedIn**: www.linkedin.com/in/arpit-shrivastava-1278as
 - **GitHub**: https://github.com/arpit2212
 - **Institution**: SRM Institute of Science and Technology (SRMIST), Chennai
